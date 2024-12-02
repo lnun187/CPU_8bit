@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Data_memory(
+module Data_Memory(
     input Clk,
     input [7:0] Data_in,
     input En,
