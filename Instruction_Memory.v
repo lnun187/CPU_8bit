@@ -28,4 +28,21 @@ module Instruction_Memory(
     output reg [2:0] Opcode,
     output reg [4:0] Address
     );
+    reg [2:0] opcode_next;
+    reg [4:0] address_next;
+
+    always @(*) begin
+        opcode_next = mem_ins[Program_counter * 8 +: 3];
+        address_next = mem_ins[Program_counter * 8 + 3 +: 5];
+    end
+
+    always @(posedge Clk or posedge Reset) begin
+        if (Reset) begin
+            Opcode <= 3'b0;      
+            Address <= 5'b0;    
+        end else begin
+            Opcode <= opcode_next;
+            Address <= address_next;
+        end
+    end
 endmodule
