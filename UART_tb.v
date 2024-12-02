@@ -6,7 +6,7 @@ module UART_tb;
     reg Clk;
     reg RX;
     reg Load;
-    wire [255:0] memory_ins;
+    wire [7:0] data_out;
     wire FE;
     wire [12:0]in;
     // Instantiate UART module
@@ -14,15 +14,15 @@ module UART_tb;
         .Clk(Clk),
         .RX(RX),
         .Load(Load),
-        .memory_ins(memory_ins),
+        .data_out(data_out),
         .FE(FE),
         .index(in)
     );
 
-    // Clock generation (25MHz clock -> 40ns period)
+    // Clock generation (250MHz clock -> 4ns period)
     initial begin
         Clk = 0;
-        forever #2 Clk = ~Clk; // 20ns clock period
+        forever #2 Clk = ~Clk; // 4ns clock period
     end
 
     // Task to send a byte via UART
@@ -59,7 +59,7 @@ module UART_tb;
         Load = 1;
 
         // Wait for system ready
-        #2;
+        #4;
 
         // Send valid bytes
         send_uart_byte(8'h55); // Send 0x55 (binary: 01010101)
@@ -71,7 +71,7 @@ module UART_tb;
         #200000;
 
         // Display results
-        $display("Memory contents: %h", memory_ins);
+        $display("Memory contents: %h", data_out);
         $display("Frame Error (FE): %b", FE);
 
         // End simulation
@@ -80,8 +80,8 @@ module UART_tb;
 
     // Monitor signals
     initial begin
-        $monitor("Time = %0dns | RX = %b | Load = %b | FE = %b | memory_ins = %h",
-                 $time, RX, Load, FE, memory_ins);
+        $monitor("Time = %0dns | RX = %b | Load = %b | FE = %b | data_out = %h",
+                 $time, RX, Load, FE, data_out);
     end
 
 endmodule
