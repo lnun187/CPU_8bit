@@ -28,8 +28,9 @@ module Control_Unit(
     output reg En_write_reg,
     output reg En_write_mem,
     output reg [2:0] ALU_OP
-¡¡¡¡¡¡);
- // Internal wires for combinational logic
+    );
+    
+    // Internal wires for combinational logic
     wire write_reg_next;
     wire write_mem_next;
     wire [2:0] ALU_op_next;
