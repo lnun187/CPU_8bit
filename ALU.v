@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Khoa
 // 
 // Create Date: 11/25/2024 10:25:43 PM
 // Design Name: 
@@ -29,7 +29,6 @@ module ALU(
     );
     reg [7:0] ALU_result;
     reg SKZ_source;
-    reg SKZ_select;
     wire [7:0] adder_result;
     
     assign result = ALU_result;
@@ -54,14 +53,7 @@ module ALU(
         endcase
         
         case (ALU_OP)
-            3'b000, 3'b001, 3'b110, 3'b111:
-                SKZ_select = 1;
-            default:
-                SKZ_select = 0;
-        endcase 
-        
-        case (SKZ_select)
-            1'b0: // NOR all bits of ALU_result
+            3'b000, 3'b001, 3'b110, 3'b111: // NOR all bits of ALU_result
                 SKZ_source = ~(ALU_result[7] | ALU_result[6] | ALU_result[5] | ALU_result[4] |
                                ALU_result[3] | ALU_result[2] | ALU_result[1] | ALU_result[0]);
             default: // NOR all bits of inA
