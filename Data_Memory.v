@@ -26,5 +26,15 @@ module Data_Memory(
     input En,
     input [4:0] Address,
     output [7:0] Data_out
-    );
+);
+
+    reg [7:0] memory [0:31];
+    assign Data_out = memory[Address];
+    
+    // Ghi khi en active + clock lên
+    always @(posedge Clk) begin
+        if (En) begin
+            memory[Address] <= Data_in;
+        end
+    end
 endmodule
