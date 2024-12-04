@@ -106,7 +106,7 @@ module CPU(
    end
    
    //Control unit
-   Control_Unit(
+   Control_Unit c(
        .Clk(Clk),
        .Reset(Reset),
        .En(En_cpu),
@@ -129,7 +129,7 @@ module CPU(
    end
    
    //Data memory
-   Data_Memory(
+   Data_Memory d(
        .Clk(Clk),
        .Reset(Reset),
        .Data_in(Data_in),
@@ -139,7 +139,7 @@ module CPU(
        );
        
    //ALU
-   ALU(
+   ALU e(
        .inA(Accumulator),
        .inB(Data_out),
        .ALU_OP(ALU_OP),

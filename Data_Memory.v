@@ -28,19 +28,20 @@ module Data_Memory(
     input [4:0] Address,
     output [7:0] Data_out
 );
-    integer i;
-    reg [7:0] memory [31:0];
-    assign Data_out = memory[Address];
-//    reg [7:0] memory_next [31:0];
+    wire [7:0] memory [31:0];
     
-    // Ghi khi en active + clock lên
-    always @(posedge Clk, posedge Reset) begin
-        if(Reset) 
-            for(i = 0; i < 32; i = i + 1) begin
-                memory[i] <= 8'd0;
-            end
-        else if (En) begin
-            memory[Address] <= Data_in;
+    assign Data_out = memory[Address];
+    generate
+        genvar i;
+        for(i = 0; i < 32; i = i + 1) begin: dataGen
+            data_mem u(
+                .Clk(Clk),
+                .Reset(Reset),
+                .En(Address == i),
+                .data_in(Data_in),
+                .data_out(memory[i])
+                );
         end
-    end
+    endgenerate
+    
 endmodule
