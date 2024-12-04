@@ -26,8 +26,7 @@ module UART(
     input PC,
     //output reg [255:0] memory_ins,
     output [7:0] data_out,
-    output FE,
-    output [12:0] index
+    output FE
     );
     parameter Baudrate = 2603;
     wire    [12:0] count_clk_next;
@@ -44,7 +43,6 @@ module UART(
     wire    [4:0] address_next;
     reg     [7:0] memory_ins[31:0];
     reg     [7:0] memory_ins_next [31:0];
-    assign index = i;
     
     posedge_detection a(
         .CPU_Clk(Clk),

@@ -22,18 +22,24 @@
 
 module Data_Memory(
     input Clk,
+    input Reset,
     input [7:0] Data_in,
     input En,
     input [4:0] Address,
     output [7:0] Data_out
 );
-
-    reg [7:0] memory [0:31];
+    integer i;
+    reg [7:0] memory [31:0];
     assign Data_out = memory[Address];
+//    reg [7:0] memory_next [31:0];
     
     // Ghi khi en active + clock lên
-    always @(posedge Clk) begin
-        if (En) begin
+    always @(posedge Clk, posedge Reset) begin
+        if(Reset) 
+            for(i = 0; i < 32; i = i + 1) begin
+                memory[i] <= 8'd0;
+            end
+        else if (En) begin
             memory[Address] <= Data_in;
         end
     end

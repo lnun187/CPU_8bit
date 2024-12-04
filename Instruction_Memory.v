@@ -23,8 +23,7 @@
 module Instruction_Memory(
     input Clk,
     input Reset,
-    input [4:0] Program_counter,
-    input [255:0] mem_ins,
+    input [7:0] mem_ins,
     output reg [2:0] Opcode,
     output reg [4:0] Address
     );
@@ -32,8 +31,8 @@ module Instruction_Memory(
     reg [4:0] address_next;
 
     always @(*) begin
-        opcode_next = mem_ins[Program_counter * 8 +: 3];
-        address_next = mem_ins[Program_counter * 8 + 3 +: 5];
+        opcode_next = mem_ins[7:5];
+        address_next = mem_ins[4:0];
     end
 
     always @(posedge Clk or posedge Reset) begin

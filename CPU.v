@@ -25,10 +25,11 @@ module CPU(
     input Load,
     input RX,
     input Reset,
+    output FE,
     output [7:0] Instruction,
     output [7:0] Data_mem
     );
-    wire [255:0] Ins;
+    wire [7:0] Ins;
     wire [4:0] Program_counter;
     reg [4:0] PC;
     wire [4:0] PC_next;
@@ -56,17 +57,18 @@ module CPU(
     wire tmp_f;
     wire [7:0] result;
     // use uart to receive instruction data
-    UART (
-        .Clk(Clk),
-        .RX(RX), // receive
-        .Load(Load),//switch Load, when Load rise edge then memory reset Ins, load new instruction data
-        .memory_ins(Ins));//Instruction memory
-    
+     UART a(
+       .Clk(Clk),
+       .RX(RX),
+       .Load(Load),
+       .PC(Program_counter),
+       .data_out(Ins),
+       .FE(FE)
+   );
     //every time Clk rise edge, opcode and address change according to Program_counter
-   Instruction_Memory (
+   Instruction_Memory b(
        .Clk(Clk),
        .Reset(Reset),
-       .Program_counter(Program_counter),
        .mem_ins(Ins),
        .Opcode(Opcode),
        .Address(addr));
@@ -129,6 +131,7 @@ module CPU(
    //Data memory
    Data_Memory(
        .Clk(Clk),
+       .Reset(Reset),
        .Data_in(Data_in),
        .En(En_mem),
        .Address(Address),
