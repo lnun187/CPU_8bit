@@ -23,7 +23,7 @@ module UART(
     input Clk,
     input RX,
     input Load,
-    input PC,
+    input [4:0] PC,
     //output reg [255:0] memory_ins,
     output [7:0] data_out,
     output FE

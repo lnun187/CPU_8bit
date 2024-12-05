@@ -30,9 +30,11 @@ module Control_Unit(
     output reg [2:0] ALU_OP
     );
     
-    wire write_reg_next = (Opcode == 3'b010 || Opcode == 3'b011 || Opcode == 3'b100 || Opcode == 3'b101);
-    wire write_mem_next = (Opcode == 3'b110);
-    
+    wire write_reg_next;
+    wire write_mem_next;
+    assign write_mem_next = (Opcode == 3'b110);
+    assign write_reg_next = (Opcode == 3'b010 || Opcode == 3'b011 || Opcode == 3'b100 || Opcode == 3'b101);
+        
     always @(posedge Clk or posedge Reset) begin
         if (Reset) begin
             En_write_reg <= 1'b0;

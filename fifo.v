@@ -26,40 +26,39 @@ module fifo(
     input [7:0] data_in,
     input WR,
     input RD,
-    input PC,
+    input [4:0] PC,
     output [7:0] data_out,
     output full,
     output empty
     );
     parameter LENGTH = 32;
-    reg [4:0] wr_ptr;
-    reg [4:0] wr_ptr_next;
-//    reg [4:0] rd_ptr;
-//    reg [4:0] rd_ptr_next;
-    reg [7:0] memory [LENGTH - 1:0];
-    assign full = wr_ptr == LENGTH - 1 ? 1'b1 : 1'b0;
-    assign empty = wr_ptr == 5'd0 ? 5'd1 : 1'b0;
+    reg [$clog2(LENGTH) - 1 : 0] wr_ptr;
+    reg [$clog2(LENGTH) - 1 : 0] wr_ptr_next;
+    wire [7:0] memory [LENGTH - 1:0];
+//    assign full = &wr_ptr;
+    assign full = wr_ptr == LENGTH - 1;
+    assign empty = |wr_ptr;
     assign data_out = memory[PC];
-//    assign data_out = wr_ptr;   
     always @(*) begin
-        wr_ptr_next = wr_ptr + 5'd1;
-//        rd_ptr_next = rd_ptr + 5'd1;
-//        rd_ptr_next = wr_ptr - 1'b1;
+        wr_ptr_next = wr_ptr + 1'b1;
     end
+    generate
+        genvar i;
+        for(i = 0; i < 32; i = i + 1) begin: insGen
+            data_mem u(
+                .Clk(CPU_Clk),
+                .Reset(Reset),
+                .En(wr_ptr == i && WR && !full),
+                .data_in(data_in),
+                .data_out(memory[i])
+                );
+        end
+    endgenerate
     always @(posedge CPU_Clk, posedge Reset) begin
         if(Reset) begin
             wr_ptr <= 5'd0;
         end else if(WR && !full) begin
             wr_ptr <= wr_ptr_next;
-            memory[wr_ptr] <= data_in;
         end
     end
-//    always @(posedge CPU_Clk, posedge Reset) begin
-//        if(Reset) begin
-//            rd_ptr <= 5'd0;
-//        end else if(RD && !empty) begin
-//            rd_ptr <= rd_ptr_next;
-////            data_out <= memory[rd_ptr];
-//        end
-//    end
 endmodule
