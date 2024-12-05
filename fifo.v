@@ -35,8 +35,8 @@ module fifo(
     reg [$clog2(LENGTH) - 1 : 0] wr_ptr;
     reg [$clog2(LENGTH) - 1 : 0] wr_ptr_next;
     wire [7:0] memory [LENGTH - 1:0];
-//    assign full = &wr_ptr;
-    assign full = wr_ptr == LENGTH - 1;
+    assign full = &wr_ptr;
+//    assign full = wr_ptr == LENGTH - 1;
     assign empty = |wr_ptr;
     assign data_out = memory[PC];
     always @(*) begin

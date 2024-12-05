@@ -32,7 +32,7 @@ module CPU(
     wire [7:0] Ins;
     wire [4:0] Program_counter;
     reg [4:0] PC;
-    wire [4:0] PC_next;
+//    wire [4:0] PC_next;
     reg En_run;
     wire [4:0] addr;
     reg [4:0] Address;
@@ -74,18 +74,18 @@ module CPU(
        .Address(addr));
    
    //Chose what pc next in case JMP or SKZ
-   xnor (tmp_a, Opcode, 3'b111);
-   xnor (tmp_b, Opcode, 3'b001);
-   and  (tmp_c, tmp_b, SKZ_cmp);
-   or   (jmp_or_not, tmp_a, tmp_c);
-   assign pc_jmp = jmp_or_not ? Address : (PC + 5'd1);
+//   xnor (tmp_a, Opcode, 3'b111);
+//   xnor (tmp_b, Opcode, 3'b001);
+//   and  (tmp_c, tmp_b, SKZ_cmp);
+//   or   (jmp_or_not, tmp_a, tmp_c);
+   assign pc_jmp = &(Opcode ~^ 3'b111) || (&(Opcode ~^ 3'b001) && SKZ_cmp) ? Address : (PC + 5'd1);
    
    //Choose what pc next in case Load
-   assign PC_next = Load ? 5'd0 : pc_jmp;
+   assign Program_counter = ~Load && pc_jmp;
    
    //When HLT or Load then disable
-   xnor (tmp_d, Opcode, 3'b000);
-   assign En_cpu = Load ? 1'b0 : tmp_d;
+//   xnor (tmp_d, Opcode, 3'b000);
+   assign En_cpu = ~Load && | Opcode;
    
    //Program counter and Address
    always @(posedge Clk, posedge Reset) begin
@@ -94,7 +94,7 @@ module CPU(
             Address <= 5'd0;
         end
         else if(En_cpu) begin
-            PC <= PC_next;
+            PC <= Program_counter;
             Address <= addr; 
         end
    end
@@ -102,7 +102,7 @@ module CPU(
    //En_run
    always @(posedge Clk, posedge Reset) begin
         if(Reset) En_run <= 1'b0;
-        else En_run <= tmp_d;
+        else En_run <= En_cpu;
    end
    
    //Control unit
@@ -117,10 +117,10 @@ module CPU(
        );
        
    //When HLT disable Accumulator and Data_Memory after one cycle
-   and  (tmp_e, En_run, En_write_reg);
-   and  (tmp_f, En_run, En_write_mem);
-   assign En_acc = Load ? 1'b0 : tmp_e;
-   assign En_mem = Load ? 1'b0 : tmp_f;
+//   and  (tmp_e, En_run, En_write_reg);
+//   and  (tmp_f, En_run, En_write_mem);
+   assign En_acc = ~Load && En_write_reg && En_run;
+   assign En_mem = ~Load && En_write_mem && En_run;
    
    //Accumulator
    always @(posedge Clk, posedge Reset) begin
@@ -132,7 +132,7 @@ module CPU(
    Data_Memory d(
        .Clk(Clk),
        .Reset(Reset),
-       .Data_in(Data_in),
+       .Data_in(result),
        .En(En_mem),
        .Address(Address),
        .Data_out(Data_out)
