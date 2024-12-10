@@ -37,7 +37,7 @@ module CPU(
     wire [4:0] addr;
     reg [4:0] Address;
     reg [7:0] Accumulator;
-    wire [7:0] Data_in;
+//    wire [7:0] Data_in;
     wire [7:0] Data_out;
     wire En_mem;
     wire En_acc;
@@ -45,10 +45,10 @@ module CPU(
     wire [2:0] Opcode;
     wire jmp_or_not;
     wire SKZ_cmp;
-    wire tmp_a;
-    wire tmp_b;
-    wire tmp_c;
-    wire tmp_d;
+//    wire tmp_a;
+//    wire tmp_b;
+//    wire tmp_c;
+//    wire tmp_d;
     wire [4:0] pc_jmp;
     wire En_write_reg;
     wire En_write_mem;
@@ -57,6 +57,8 @@ module CPU(
     wire tmp_f;
     wire [7:0] result;
     // use uart to receive instruction data
+    assign Instruction = Ins;
+    assign Data_mem = Data_out;
      UART a(
        .Clk(Clk),
        .RX(RX),
@@ -78,11 +80,11 @@ module CPU(
 //   xnor (tmp_b, Opcode, 3'b001);
 //   and  (tmp_c, tmp_b, SKZ_cmp);
 //   or   (jmp_or_not, tmp_a, tmp_c);
-   assign pc_jmp = &(Opcode ~^ 3'b111) || (&(Opcode ~^ 3'b001) && SKZ_cmp) ? Address : (PC + 5'd1);
-   
+//   assign pc_jmp = &(Opcode ~^ 3'b111) || (&(Opcode ~^ 3'b001) && SKZ_cmp) ? Address : (PC + 5'd1);
+   assign pc_jmp = (Opcode == 3'b111 || (Opcode == 3'b001 && SKZ_cmp)) ? Address : (PC + 5'd1);
    //Choose what pc next in case Load
-   assign Program_counter = ~Load && pc_jmp;
-   
+//   assign Program_counter = ~Load && pc_jmp;
+    assign Program_counter = ~Load ? pc_jmp : 5'd0;   
    //When HLT or Load then disable
 //   xnor (tmp_d, Opcode, 3'b000);
    assign En_cpu = ~Load && | Opcode;
@@ -124,7 +126,7 @@ module CPU(
    
    //Accumulator
    always @(posedge Clk, posedge Reset) begin
-        if(Reset) Accumulator <= 5'd0;
+        if(Reset) Accumulator <= 8'd0;
         else if(En_acc) Accumulator <= result;
    end
    

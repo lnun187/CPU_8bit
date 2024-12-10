@@ -41,8 +41,8 @@ module UART(
     wire    En_2;
     reg     [4:0] address;
     wire    [4:0] address_next;
-    reg     [7:0] memory_ins[31:0];
-    reg     [7:0] memory_ins_next [31:0];
+//    reg     [7:0] memory_ins[31:0];
+//    reg     [7:0] memory_ins_next [31:0];
     
     posedge_detection a(
         .CPU_Clk(Clk),
