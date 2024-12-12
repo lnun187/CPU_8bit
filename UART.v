@@ -51,6 +51,7 @@ module UART(
     );
 
     assign FE = (i == 4'd9) & ~RX;
+//assign FE = En_2;
     //count_clk        
     assign count_clk_next = (count_clk == Baudrate - 1'b1) ? 13'd0 : (count_clk + 13'd1);
     always @(posedge Clk, posedge Reset) begin

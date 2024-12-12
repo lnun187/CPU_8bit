@@ -37,7 +37,7 @@ module Data_Memory(
             data_mem u(
                 .Clk(Clk),
                 .Reset(Reset),
-                .En(Address == i),
+                .En(Address == i && En),
                 .data_in(Data_in),
                 .data_out(memory[i])
                 );

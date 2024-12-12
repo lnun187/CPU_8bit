@@ -28,16 +28,20 @@ module CPU_tb;
     reg Reset;
     wire FE;
     wire [7:0] Instruction;
-    wire [7:0] Data_mem;
+    wire [7:0] Acc;
+    wire [7:0] Mem;
+    wire [4:0] Program_counter;
     // Instantiate CPU module
-CPU uut(
+CPU #(.Baudrate(24)) uut(
     .Clk(Clk),
     .Load(Load),
     .RX(RX),
     .Reset(Reset),
     .FE(FE),
     .Instruction(Instruction),
-    .Data_mem(Data_mem)
+    .Acc(Acc),
+    .Mem(Mem),
+    .Program_counter(Program_counter)
     );
     // Clock generation (250MHz clock -> 4ns period)
     initial begin
@@ -83,18 +87,30 @@ CPU uut(
         #4;
 
         // Send valid bytes
-        send_uart_byte(8'h55); // Send 0x55 (binary: 01010101)
+        send_uart_byte(8'hC0); // Send 0x55 (binary: 11000000)
+        send_uart_byte(8'h40); // Send 0x55 (binary: 01000000)
         send_uart_byte(8'hA3); // Send 0xA3 (binary: 10100011)
-        send_uart_byte(8'hFF); // Send 0xFF (binary: 11111111)
+        send_uart_byte(8'hE5); // Send 0xFF (binary: 11100101)
+        send_uart_byte(8'hA0); // Send 0xA3 (binary: 10100011)
         send_uart_byte(8'h00); // Send 0x00 (binary: 00000000)
         
         #4 Load = 0;
         // Wait for processing
-        #200000;
-
+        #200;
+        Load = 1;
+        #4
+        send_uart_byte(8'hC0); // Send 0x55 (binary: 11000000)
+        send_uart_byte(8'h40); // Send 0x55 (binary: 01000000)
+        send_uart_byte(8'hA3); // Send 0xA3 (binary: 10100011)
+        send_uart_byte(8'hE5); // Send 0xFF (binary: 11100101)
+        send_uart_byte(8'hA0); // Send 0xA3 (binary: 10100011)
+        send_uart_byte(8'h00); // Send 0x00 (binary: 00000000)
+         #4 Load = 0;
+         #200
         // Display results
         $display("Instruction contents: %h", Instruction);
-        $display("Memory contents: %h", Data_mem);
+        $display("Accumulator contents: %h", Acc);
+        $display("Memory[address] contents: %h", Mem);
         $display("Frame Error (FE): %b", FE);
 
         // End simulation
@@ -103,8 +119,8 @@ CPU uut(
 
     // Monitor signals
     initial begin
-        $monitor("Time = %0dns | RX = %b | Load = %b | Instruction = %b | FE = %b | Data_mem = %h",
-                 $time, RX, Load, Instruction, FE, Data_mem);
+        $monitor("Time = %0dns | RX = %b | Load = %b | Instruction = %b | FE = %b | Accumulator = %h | Memory[address] = %h",
+                 $time, RX, Load, Instruction, FE, Acc, Mem);
     end
 
 endmodule
