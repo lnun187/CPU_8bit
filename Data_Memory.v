@@ -37,7 +37,7 @@ module Data_Memory(
             data_mem u(
                 .Clk(Clk),
                 .Reset(Reset),
-                .Reset_value((i == 8'h1B) ? 8'hFF : 8'h00), 
+                .Reset_value((i == 8'h1B) ? 8'hFF : (i == 8'h1C ? 8'hAA: 8'h00)), 
                 .En(Address == i && En),
                 .data_in(Data_in),
                 .data_out(memory[i])

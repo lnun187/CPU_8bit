@@ -73,7 +73,10 @@ module CPU(
        .Address(addr)
        );
    
-   assign pc_jmp = (Opcode == 3'b111 || (Opcode == 3'b001 && SKZ_cmp)) ? addr : (Opcode == 3'b000) ? PC : (PC + 5'd1);
+   assign pc_jmp = (Opcode == 3'b111) ? addr : 
+                    (Opcode == 3'b001 && SKZ_cmp)? (PC + 5'd2) : 
+                    (Opcode == 3'b000) ? PC : 
+                    (PC + 5'd1);
    //Choose what pc next in case Load
     assign Program_counter = ~Load ? pc_jmp : 5'd0;   
    //When HLT or Load then disable
@@ -114,7 +117,7 @@ module CPU(
    
    //Accumulator
    always @(posedge Clk, posedge Reset) begin
-        if(Reset) Accumulator <= 8'd3;
+        if(Reset) Accumulator <= 8'd0;
         else if(En_acc) Accumulator <= result;
    end
    
