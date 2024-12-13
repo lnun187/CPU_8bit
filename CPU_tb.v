@@ -89,7 +89,7 @@ CPU #(.Baudrate(24)) uut(
         // Send valid bytes
         send_uart_byte(8'hC0); // Send 0x55 (binary: 11000000)
         send_uart_byte(8'h40); // Send 0x55 (binary: 01000000)
-        send_uart_byte(8'hA3); // Send 0xA3 (binary: 10100011)
+        send_uart_byte(8'hBB); // Send 0xA3 (binary: 10100011)
         send_uart_byte(8'hE5); // Send 0xFF (binary: 11100101)
         send_uart_byte(8'hA0); // Send 0xA3 (binary: 10100011)
         send_uart_byte(8'h00); // Send 0x00 (binary: 00000000)

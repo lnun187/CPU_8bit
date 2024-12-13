@@ -23,6 +23,7 @@
 module data_mem(
     input Clk,
     input Reset,
+    input  [7:0] Reset_value,
     input En,
     input [7:0] data_in,
     output [7:0] data_out
@@ -30,7 +31,7 @@ module data_mem(
     reg [7:0] data;
     assign data_out = data;
     always @(posedge Clk, posedge Reset) begin
-        if(Reset) data <= 8'd0;
+        if(Reset) data <= Reset_value;
         else if(En) data <= data_in;
     end
 endmodule
