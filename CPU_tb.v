@@ -84,12 +84,9 @@ CPU #(.Baudrate(24)) uut(
         // Apply Load signal (reset)
         Reset = 0;
         // Wait for system ready
-        #20
-        Load = 1;
-        #8
-        Load = 0;
+
         // Wait for processing
-        #20;
+        #200;
         // Display results
         $display("Instruction contents: %h", Instruction);
         $display("Accumulator contents: %h", Acc);
