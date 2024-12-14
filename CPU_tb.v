@@ -36,7 +36,7 @@ CPU #(.Baudrate(24)) uut(
     .Clk(Clk),
     .Load(Load),
     .RX(RX),
-    .Reset(Reset),
+    .Reset1(Reset),
     .FE(FE),
     .Instruction(Instruction),
     .Acc(Acc),
@@ -73,7 +73,8 @@ CPU #(.Baudrate(24)) uut(
     // Test Sequence
     initial begin
         // Initialize signals
-        Reset = 1;
+        Reset = 0;
+        #10 Reset = 1;
         RX = 1; // Idle state (UART line high)
         Load = 0;
 

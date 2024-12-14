@@ -22,19 +22,19 @@
 
 module CPU(
     input Clk,
-    input Load1,
+    input Load,
     input RX,
     input Reset1,
     output FE,
     output [7:0] Instruction,
-    output [7:0] Acc
-//    output [7:0] Mem,
-//    output [4:0] Program_counter
+    output [7:0] Acc,
+    output [7:0] Mem,
+    output [4:0] Program_counter
     );
     parameter UBRR = 5207;
     wire Reset;
     wire Load;
-    wire [4:0] Program_counter;
+//    wire [4:0] Program_counter;
     wire [7:0] Ins;
     reg [4:0] PC;
     reg En_run;
@@ -59,17 +59,12 @@ module CPU(
     assign Instruction = {Opcode, addr};
 //    assign Instruction = Program_counter;
     assign Acc = Accumulator;
-    posedge_detection(
+    posedge_detection y(
     .CPU_Clk(Clk),
     .signal_in(Reset1),
     .signal_out(Reset)
     );
-    posedge_detection(
-    .CPU_Clk(Clk),
-    .signal_in(Load1),
-    .signal_out(Load)
-    );
-//    assign Mem = Data_out;
+    assign Mem = Data_out;
      UART #(.UBRR(UBRR)) a(
        .Clk(Clk),
        .RX(RX),
