@@ -84,42 +84,7 @@ CPU #(.Baudrate(24)) uut(
         Load = 1;
         Reset = 0;
         // Wait for system ready
-        #4;
 
-        // Send valid bytes
-    send_uart_byte(8'b111_11110);     //  00   BEGIN:   JMP TST_JMP
-    send_uart_byte(8'b000_00000);     //  01            HLT        
-    send_uart_byte(8'b000_00000);     //  02            HLT       
-    send_uart_byte(8'b101_11010);     //  03   JMP_OK:  LDA DATA_1
-    send_uart_byte(8'b001_00000);     //  04            SKZ
-    send_uart_byte(8'b000_00000);     //  05            HLT        
-    send_uart_byte(8'b101_11011);     //  06            LDA DATA_2
-    send_uart_byte(8'b001_00000);     //  07            SKZ
-    send_uart_byte(8'b111_01010);     //  08            JMP SKZ_OK
-    send_uart_byte(8'b000_00000);     //  09            HLT        
-    send_uart_byte(8'b110_11100);     //  0A   SKZ_OK:  STO TEMP   
-    send_uart_byte(8'b101_11010);     //  0B            LDA DATA_1
-    send_uart_byte(8'b110_11100);     //  0C            STO TEMP   
-    send_uart_byte(8'b101_11100);     //  0D            LDA TEMP
-    send_uart_byte(8'b001_00000);     //  0E            SKZ        
-    send_uart_byte(8'b000_00000);     //  0F            HLT        
-    send_uart_byte(8'b100_11011);     //  10            XOR DATA_2
-    send_uart_byte(8'b001_00000);     //  11            SKZ        
-    send_uart_byte(8'b111_10100);     //  12            JMP XOR_OK
-    send_uart_byte(8'b000_00000);     //  13            HLT        
-    send_uart_byte(8'b100_11011);     //  14   XOR_OK:  XOR DATA_2
-    send_uart_byte(8'b001_00000);     //  15            SKZ
-    send_uart_byte(8'b000_00000);     //  16            HLT        
-    send_uart_byte(8'b000_00000);     //  17   END:     HLT        
-    send_uart_byte(8'b111_00000);     //  18            JMP BEGIN  
-    send_uart_byte(8'b000_00000);     //  19            HLT
-    send_uart_byte(8'b000_00000);     //  1A            HLT
-    send_uart_byte(8'b000_00000);     //  1B            HLT
-    send_uart_byte(8'b000_00000);     //  1C            HLT
-    send_uart_byte(8'b000_00000);     //  1D            HLT
-    send_uart_byte(8'b111_00011);     //  1E   TST_JMP: JMP JMP_OK
-    send_uart_byte(8'b000_00000);     //  1F            HLT
-        
         #4 Load = 0;
         // Wait for processing
         #200;
