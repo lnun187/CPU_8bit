@@ -74,19 +74,17 @@ CPU #(.Baudrate(24)) uut(
     initial begin
         // Initialize signals
         Reset = 0;
+        Load = 0;
         #10 Reset = 1;
         RX = 1; // Idle state (UART line high)
-        Load = 0;
 
         // Wait for system to stabilize
         #12;
 
         // Apply Load signal (reset)
-        Load = 1;
         Reset = 0;
         // Wait for system ready
 
-        #4 Load = 0;
         // Wait for processing
         #200;
         // Display results
