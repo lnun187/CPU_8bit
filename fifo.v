@@ -25,7 +25,6 @@ module fifo(
     input Reset,
     input [7:0] data_in,
     input WR,
-    input RD,
     input [4:0] PC,
     output [7:0] data_out,
     output full,
@@ -47,6 +46,7 @@ module fifo(
             data_mem u(
                 .Clk(CPU_Clk),
                 .Reset(Reset),
+                .Reset_value(0),
                 .En(wr_ptr == i && WR && !full),
                 .data_in(data_in),
                 .data_out(memory[i])

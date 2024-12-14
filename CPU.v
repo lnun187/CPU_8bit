@@ -22,16 +22,19 @@
 
 module CPU(
     input Clk,
-    input Load,
+    input Load1,
     input RX,
-    input Reset,
+    input Reset1,
     output FE,
     output [7:0] Instruction,
-    output [7:0] Acc,
-    output [7:0] Mem,
-    output [4:0] Program_counter
+    output [7:0] Acc
+//    output [7:0] Mem,
+//    output [4:0] Program_counter
     );
-    parameter Baudrate = 9600;
+    parameter UBRR = 5207;
+    wire Reset;
+    wire Load;
+    wire [4:0] Program_counter;
     wire [7:0] Ins;
     reg [4:0] PC;
     reg En_run;
@@ -43,7 +46,7 @@ module CPU(
     wire En_acc;
     wire En_cpu;
     wire [2:0] Opcode;
-    wire jmp_or_not;
+//    wire jmp_or_not;
     wire SKZ_cmp;
     wire [4:0] pc_jmp;
     wire En_write_reg;
@@ -54,9 +57,20 @@ module CPU(
     wire [7:0] result;
     // use uart to receive instruction data
     assign Instruction = {Opcode, addr};
+//    assign Instruction = Program_counter;
     assign Acc = Accumulator;
-    assign Mem = Data_out;
-     UART #(.Baudrate(Baudrate)) a(
+    posedge_detection(
+    .CPU_Clk(Clk),
+    .signal_in(Reset1),
+    .signal_out(Reset)
+    );
+    posedge_detection(
+    .CPU_Clk(Clk),
+    .signal_in(Load1),
+    .signal_out(Load)
+    );
+//    assign Mem = Data_out;
+     UART #(.UBRR(UBRR)) a(
        .Clk(Clk),
        .RX(RX),
        .Load(Load),
