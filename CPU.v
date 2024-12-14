@@ -31,7 +31,7 @@ module CPU(
     output [7:0] Mem,
     output [4:0] Program_counter
     );
-    parameter Baudrate = 9600;
+    parameter Baudrate = 10415;
     wire [7:0] Ins;
     reg [4:0] PC;
     reg En_run;

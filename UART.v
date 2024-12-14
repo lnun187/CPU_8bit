@@ -84,7 +84,6 @@ module UART(
         .Reset(Reset),
         .data_in(buffer[8:1]),
         .WR(En_2),
-        .RD(),
         .PC(PC),
         .data_out(data_out),
         .full(),
