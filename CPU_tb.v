@@ -24,20 +24,16 @@ module CPU_tb;
     // Testbench Signals
     reg Clk;
     reg RX;
-    reg Load;
     reg Reset;
-    wire FE;
     wire [7:0] Instruction;
     wire [7:0] Acc;
     wire [7:0] Mem;
     wire [4:0] Program_counter;
     // Instantiate CPU module
-CPU #(.Baudrate(24)) uut(
+CPU  uut(
     .Clk(Clk),
-    .Load(Load),
     .RX(RX),
-    .Reset1(Reset),
-    .FE(FE),
+    .Reset(Reset),
     .Instruction(Instruction),
     .Acc(Acc),
     .Mem(Mem),
@@ -74,12 +70,11 @@ CPU #(.Baudrate(24)) uut(
     initial begin
         // Initialize signals
         Reset = 0;
-        Load = 0;
         #10 Reset = 1;
         RX = 1; // Idle state (UART line high)
 
         // Wait for system to stabilize
-        #12;
+        #10;
 
         // Apply Load signal (reset)
         Reset = 0;
@@ -91,7 +86,6 @@ CPU #(.Baudrate(24)) uut(
         $display("Instruction contents: %h", Instruction);
         $display("Accumulator contents: %h", Acc);
         $display("Memory[address] contents: %h", Mem);
-        $display("Frame Error (FE): %b", FE);
 
         // End simulation
         $finish;
@@ -99,8 +93,8 @@ CPU #(.Baudrate(24)) uut(
 
     // Monitor signals
     initial begin
-        $monitor("Time = %0dns | RX = %b | Load = %b | Instruction = %b | FE = %b | Accumulator = %h | Memory[address] = %h",
-                 $time, RX, Load, Instruction, FE, Acc, Mem);
+        $monitor("Time = %0dns | RX = %b | Instruction = %b | Accumulator = %h | Memory[address] = %h",
+                 $time, RX, Instruction, Acc, Mem);
     end
 
 endmodule

@@ -22,19 +22,13 @@
 
 module CPU(
     input Clk,
-    input Load,
     input RX,
-    input Reset1,
-    output FE,
+    input Reset,
     output [7:0] Instruction,
     output [7:0] Acc,
     output [7:0] Mem,
     output [4:0] Program_counter
     );
-    parameter UBRR = 5207;
-    wire Reset;
-    wire Load;
-//    wire [4:0] Program_counter;
     wire [7:0] Ins;
     reg [4:0] PC;
     reg En_run;
@@ -57,27 +51,13 @@ module CPU(
     wire [7:0] result;
     // use uart to receive instruction data
     assign Instruction = {Opcode, addr};
-//    assign Instruction = Program_counter;
     assign Acc = Accumulator;
-    posedge_detection y(
-    .CPU_Clk(Clk),
-    .signal_in(Reset1),
-    .signal_out(Reset)
-    );
     assign Mem = Data_out;
-     UART #(.UBRR(UBRR)) a(
-       .Clk(Clk),
-       .RX(RX),
-       .Load(Load),
-       .PC(Program_counter),
-       .data_out(Ins),
-       .FE(FE)
-   );
     //every time Clk rise edge, opcode and address change according to Program_counter
    Instruction_Memory b(
        .Clk(Clk),
        .Reset(Reset),
-       .mem_ins(Ins),
+       .PC(Program_counter),
        .Opcode(Opcode),
        .Address(addr)
        );
@@ -87,9 +67,9 @@ module CPU(
                     (Opcode == 3'b000) ? PC : 
                     (PC + 5'd1);
    //Choose what pc next in case Load
-    assign Program_counter = ~Load ? pc_jmp : 5'd0;   
+    assign Program_counter = ~Reset ? pc_jmp : 5'd0;   
    //When HLT or Load then disable
-   assign En_cpu = ~Load && | Opcode;
+   assign En_cpu = | Opcode;
    
    //Program counter and Address
    always @(posedge Clk, posedge Reset) begin
@@ -121,8 +101,8 @@ module CPU(
        );
        
    //When HLT disable Accumulator and Data_Memory after one cycle
-   assign En_acc = ~Load && En_write_reg && En_run;
-   assign En_mem = ~Load && En_write_mem && En_run;
+   assign En_acc = En_write_reg && En_run;
+   assign En_mem = En_write_mem && En_run;
    
    //Accumulator
    always @(posedge Clk, posedge Reset) begin
